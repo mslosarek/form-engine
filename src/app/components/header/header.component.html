@@ -1,0 +1,26 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<div class="container">
+    <a class="navbar-brand" routerLink="/">Form Engine</a>
+		<button
+			class="navbar-toggler"
+			type="button"
+			aria-controls="navbarContent"
+			[attr.aria-expanded]="!collapsed"
+			aria-label="Toggle navigation"
+			(click)="collapsed = !collapsed"
+		>
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="navbar-collapse" [class.collapse]="collapsed" id="navbarContent">
+			<ul class="navbar-nav ms-auto" *ngIf="currentUser">
+				<li class="nav-item" ngbDropdown display="dynamic" placement="bottom-end">
+					<a class="nav-link" tabindex="0" ngbDropdownToggle id="userDropdown" role="button">{{ currentUser.email }}</a>
+					<div ngbDropdownMenu aria-labelledby="userDropdown" class="dropdown-menu">
+						<a ngbDropdownItem href="#" (click)="logout()">Logout</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
