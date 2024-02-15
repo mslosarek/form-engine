@@ -13,8 +13,13 @@ import { Form } from 'src/app/services/form.service';
 export class FormTableComponent {
   @Input() forms: Form[] = [];
   @Output() editForm = new EventEmitter<Form>();
+  @Output() deleteForm = new EventEmitter<Form>();
 
   triggerEditForm(form: Form): void {
     this.editForm.emit(form);
+  }
+
+  triggerDeleteForm(form: Form): void {
+    this.deleteForm.emit(form);
   }
 }

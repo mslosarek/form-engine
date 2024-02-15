@@ -58,9 +58,9 @@ export class UserService {
 
   logout(): void {
     console.log('logging out');
+    // window.location.href = this.getLogoutLink();
     sessionStorage.removeItem('AUTH_TOKEN');
     this.userChanged.emit(null);
-    // window.location.href = this.getLougoutLink();
   }
 
   getLoginLink(): string {
@@ -81,7 +81,7 @@ export class UserService {
     ].join('');
   }
 
-  getLougoutLink(): string {
+  getLogoutLink(): string {
     const u = new URL(this.platformLocation.href);
 
     return `https://${environment.COGNITO_DOMAIN}/logout?client_id=${environment.COGNITO_CLIENT_ID}&redirect_uri=${u.origin}`;

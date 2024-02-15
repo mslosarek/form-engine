@@ -32,6 +32,8 @@ export class HomeComponent implements OnInit{
 
   public forms: Form[] = [];
   public editingForm: Form | null = null;
+  public deletingForm: Form | null = null;
+
   public formValues: Form | null = null;
   public formValid = false;
 
@@ -82,11 +84,7 @@ export class HomeComponent implements OnInit{
     return this.userService.getLoginLink();
   }
 
-  test(): void {
-    console.log('test');
-  }
-
-  open(content: TemplateRef<any>, existingForm?: Form): void {
+  openEditCreate(content: TemplateRef<any>, existingForm?: Form): void {
     if (existingForm) {
       this.editingForm = existingForm;
     } else {
@@ -95,7 +93,6 @@ export class HomeComponent implements OnInit{
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', size: 'xl'})
     .result.then(
 			() => {
-        console.log(this.formValues);
         const {
           name,
           title,
@@ -137,6 +134,28 @@ export class HomeComponent implements OnInit{
 			},
 		);
 	}
+
+  openDelete(content: TemplateRef<any>, form: Form): void {
+    this.deletingForm = form;
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title'})
+    .result.then(
+      () => {
+        if (this.deletingForm && this.deletingForm.id) {
+          this.formService.deleteForm(this.deletingForm.id)
+          .pipe(
+            switchMap(() => this.formService.getForms(true))
+          )
+          .subscribe((forms: Form[]) => {
+            this.forms = forms;
+            this.deletingForm = null;
+          });
+        }
+      },
+      () => {
+        this.deletingForm = null;
+      },
+    );
+  }
 
   setFormValid(valid: boolean): void {
     this.formValid = valid;

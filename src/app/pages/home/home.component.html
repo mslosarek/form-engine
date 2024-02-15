@@ -14,6 +14,21 @@
 	</div>
 </ng-template>
 
+<ng-template #formDeleteConfirmation let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">
+      Configm Delete
+    </h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+    You are about to delete the form: {{deletingForm?.name}}. Are you sure?
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-dark" (click)="modal.close('Save click')">Confirm</button>
+	</div>
+</ng-template>
+
 <ng-container *ngIf="checked && !user">
   <h1>Welcome...</h1>
   <p>
@@ -32,7 +47,11 @@
 
   <div class="d-flex justify-content-between">
     <h2>Your Forms</h2>
-    <a class="btn btn-dark" (click)="open(formCreateEdit)">New Form</a>
+    <a class="btn btn-dark" (click)="openEditCreate(formCreateEdit)">New Form</a>
   </div>
-  <app-form-table [forms]="forms" (editForm)="open(formCreateEdit, $event)"></app-form-table>
+  <app-form-table
+    [forms]="forms"
+    (editForm)="openEditCreate(formCreateEdit, $event)"
+    (deleteForm)="openDelete(formDeleteConfirmation, $event)"
+  ></app-form-table>
 </ng-container>

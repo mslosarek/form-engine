@@ -63,4 +63,8 @@ export class FormService {
       description,
     });
   }
+
+  deleteForm(id: string): Observable<void> {
+    return this.httpClient.delete<void>(`/api/v1/forms/${id}`);
+  }
 }

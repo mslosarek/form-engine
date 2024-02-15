@@ -29,7 +29,6 @@ export class AuthCallbackComponent implements OnInit{
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      console.log(params);
       const u = new URL(this.platformLocation.href);
 
       const body = new URLSearchParams();
@@ -44,7 +43,6 @@ export class AuthCallbackComponent implements OnInit{
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       }).subscribe((response: JWTResponse) => {
-        console.log(response);
         sessionStorage.setItem('AUTH_TOKEN', response['access_token']);
         this.router.navigate(['/']);
       });

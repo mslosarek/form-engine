@@ -13,8 +13,8 @@
       <td>{{form.title}}</td>
       <td>{{form.description}}</td>
       <td>
-        <button class="btn btn-dark" (click)="triggerEditForm(form)">Edit</button>
+        <button class="btn btn-dark m-1" (click)="triggerEditForm(form)">Edit</button>
+        <button class="btn btn-dark m-1" (click)="triggerDeleteForm(form)">Delete</button>
       </td>
     </tr>
 </table>
-<pre>{{forms | json}}</pre>
