@@ -1,15 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { PlatformLocation } from '@angular/common';
 
 import { Observable, of } from 'rxjs';
-import { map, catchError, shareReplay } from 'rxjs/operators';
+import { map, catchError, shareReplay, tap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import * as uuid from 'uuid';
 
 export interface User {
-  name: string;
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
 }
 
 @Injectable({
@@ -17,16 +20,32 @@ export interface User {
 })
 export class UserService {
 
+  private currentGetUserRequest: Observable<User | null> | null = null;
+
   constructor(
     private httpClient: HttpClient,
     private platformLocation: PlatformLocation,
   ) { }
 
-  getCurrentUser(): Observable<User> {
-    return this.httpClient.get<User>('/api/v1/me')
-    .pipe(
-      shareReplay(undefined, 10 * 1000) // cache for 10 seconds
-    );
+  userChanged: EventEmitter<User | null> = new EventEmitter();
+
+  getCurrentUser(): Observable<User | null> {
+    if (!sessionStorage.getItem('AUTH_TOKEN')) {
+      return of(null);
+    }
+    if (!this.currentGetUserRequest) {
+      this.currentGetUserRequest = this.httpClient.get<User>('/api/v1/me')
+      .pipe(
+        shareReplay(undefined, 10 * 1000), // cache for 10 seconds
+        tap((user) => {
+          this.userChanged.emit(user);
+          setTimeout(() => {
+            this.currentGetUserRequest = null;
+          }, 9 * 1000);
+        }),
+      );
+    }
+    return this.currentGetUserRequest;
   }
 
   isLoggedIn(): Observable<boolean> {
@@ -37,8 +56,14 @@ export class UserService {
     );
   }
 
+  logout(): void {
+    console.log('logging out');
+    sessionStorage.removeItem('AUTH_TOKEN');
+    this.userChanged.emit(null);
+    // window.location.href = this.getLougoutLink();
+  }
+
   getLoginLink(): string {
-    // return '/api/v1/login';
     let authState = sessionStorage.getItem('AUTH_STATE');
     if (!authState) {
       sessionStorage.setItem('AUTH_STATE', uuid.v4());
@@ -54,5 +79,11 @@ export class UserService {
       `state=${authState}&`,
       `scope=openid+profile+aws.cognito.signin.user.admin&`,
     ].join('');
+  }
+
+  getLougoutLink(): string {
+    const u = new URL(this.platformLocation.href);
+
+    return `https://${environment.COGNITO_DOMAIN}/logout?client_id=${environment.COGNITO_CLIENT_ID}&redirect_uri=${u.origin}`;
   }
 }

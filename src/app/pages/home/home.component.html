@@ -1,8 +1,38 @@
-<pre>
-  {{loginLink | json}}
-  {{authToken | json}}
-</pre>
-<a [href]="loginLink">Login</a>
-<pre>
-  {{user | json}}
-</pre>
+<ng-template #formCreateEdit let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">
+      <ng-container *ngIf="editingForm">Edit Form - {{editingForm.name}}</ng-container>
+      <ng-container *ngIf="!editingForm">New Form</ng-container>
+    </h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+    <app-form-create-edit (formValid)="setFormValid($event)" (formValues)="setFormValues($event)" [form]="editingForm"></app-form-create-edit>
+	</div>
+	<div class="modal-footer">
+		<button type="button" [disabled]="!formValid" class="btn btn-dark" (click)="modal.close('Save click')">Save</button>
+	</div>
+</ng-template>
+
+<ng-container *ngIf="checked && !user">
+  <h1>Welcome...</h1>
+  <p>
+    This is a simple form application (think Google Forms, but much less feature-rich).
+  </p>
+  <p>
+    To begin, please login.
+  </p>
+  <a class="btn btn-primary" [href]="loginLink">Login</a>
+</ng-container>
+<ng-container *ngIf="checked && user">
+  <h1>Welcome, {{ user.email }}!</h1>
+  <p>
+    You can now create a new form or view your existing forms.
+  </p>
+
+  <div class="d-flex justify-content-between">
+    <h2>Your Forms</h2>
+    <a class="btn btn-dark" (click)="open(formCreateEdit)">New Form</a>
+  </div>
+  <app-form-table [forms]="forms" (editForm)="open(formCreateEdit, $event)"></app-form-table>
+</ng-container>

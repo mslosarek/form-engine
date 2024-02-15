@@ -1,0 +1,15 @@
+<form [formGroup]="formDefinition" novalidate>
+  <div class="form-group" [ngClass]="isRequired('name') ? 'required' : ''">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" aria-describedby="nameHelp" placeholder="Form Name" formControlName="name" [required]="isRequired('name')" ngbAutofocus>
+    <small id="nameHelp" class="form-text text-muted">Give your form a name (internal use only).</small>
+  </div>
+  <div class="form-group" [ngClass]="isRequired('title') ? 'required' : ''">
+    <label for="title">Title</label>
+    <input type="text" class="form-control" id="title" placeholder="Form Title" formControlName="title" [required]="isRequired('title')">
+  </div>
+  <div class="form-group" [ngClass]="isRequired('description') ? 'required' : ''">
+    <label for="description">Description</label>
+    <textarea class="form-control" id="description" placeholder="Form Description" formControlName="description" [required]="isRequired('description')"></textarea>
+  </div>
+</form>
