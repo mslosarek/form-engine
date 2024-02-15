@@ -17,8 +17,7 @@ type JWTResponse = {
   selector: 'app-auth-callback',
   standalone: true,
   imports: [],
-  templateUrl: './auth-callback.component.html',
-  styleUrl: './auth-callback.component.scss'
+  template: '<div></div>',
 })
 export class AuthCallbackComponent implements OnInit{
   constructor(
